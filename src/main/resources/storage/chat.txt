@@ -1,0 +1,83 @@
+Exemplo de estrutura de endpoints:
+Loja:
+
+GET /stores – Lista todas as lojas.
+POST /stores – Cria uma nova loja.
+Produtos associados a uma loja:
+
+GET /stores/{storeId}/products – Lista os produtos de uma loja específica.
+POST /stores/{storeId}/products – Cria um novo produto para a loja informada.
+Lotes (batches) e Estoques:
+
+GET /stores/{storeId}/batches – Lista os lotes de uma loja.
+POST /stores/{storeId}/batches – Cria um lote para a loja.
+GET /stores/{storeId}/stocks – Lista os estoques da loja.
+POST /stores/{storeId}/stocks – Registra um novo estoque para a loja.
+
+---------------------------------------------------------------------------
+
+Stores:
+GET /stores – Lista todas as lojas.
+POST /stores – Cria uma nova loja.
+PUT/PATCH /stores/{storeId} – Atualiza a loja.
+DELETE /stores/{storeId} – Deleta a loja.
+Produtos em uma Loja:
+GET /stores/{storeId}/products – Lista os produtos da loja.
+POST /stores/{storeId}/products – Cria um produto para a loja.
+PUT/PATCH /stores/{storeId}/products/{productId} – Atualiza o produto.
+DELETE /stores/{storeId}/products/{productId} – Deleta o produto.
+
+-----------------------------------------------------------------------------------
+
+Request/Response DTOs:
+Utilize sufixos que indiquem claramente se o DTO é para entrada ou saída. Por exemplo:
+
+ProductRequestDTO para dados de entrada ao criar ou atualizar um produto.
+ProductResponseDTO para dados retornados da API.
+Create/Update DTOs:
+Em operações de CRUD, é comum diferenciar os DTOs para criação e atualização:
+
+CreateStoreDTO para cadastro de uma loja.
+UpdateStoreDTO para atualização parcial ou completa dos dados da loja.
+List DTOs:
+Para operações de listagem ou para quando você precisa retornar apenas um conjunto reduzido de informações:
+
+ProductSummaryDTO ou ProductListDTO para exibir uma lista de produtos com dados essenciais.
+Nested/Composite DTOs:
+Se você precisa aninhar informações relacionadas, como produtos com seus respectivos lotes e estoques, pode utilizar nomes que indiquem essa composição:
+
+StoreDetailDTO (contendo informações da loja e seus produtos)
+BatchDetailDTO (com informações do lote, estoque e validade, por exemplo).
+------------------------------------------------------
+possivel json de vendas: 
+
+{
+  "id": "sale-1",
+  "userId": "user-1",
+  "total": 13499.00,
+  "saleDate": "2024-03-01T14:30:00",
+  "saleItems": [
+    {
+      "productId": "prod-1",
+      "quantity": 1,
+      "unitPrice": 7499.00,
+      "total": 7499.00
+    },
+    {
+      "productId": "prod-2",
+      "quantity": 1,
+      "unitPrice": 5999.00,
+      "total": 5999.00
+    }
+  ],
+  "payment": {
+    "id": "pay-1",
+    "metodoPagamento": "Cartão de Crédito",
+    "valorPago": 13499.00,
+    "dataPagamento": "2024-03-01T14:32:00",
+    "status": "PAGO"
+  }
+}
+
+----------------------------------------------------------
+https://medium.com/@erkndmrl/swagger-3-with-spring-cloud-gateway-a-comprehensive-guide-f355459d914a

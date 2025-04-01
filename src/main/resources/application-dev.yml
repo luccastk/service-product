@@ -1,0 +1,49 @@
+server:
+  servlet:
+    context-path: /
+  port: 0
+
+spring:
+  application:
+    name: product-service
+  datasource:
+    url: jdbc:postgresql://localhost:5436/products_db
+    username: product_user
+    password: product_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  messages:
+    basename: messages
+    encoding: UTF-8
+
+openapi:
+  service:
+    title: product-service doc
+    version: 1.0.0
+    url: http://localhost:8080
+
+springdoc:
+  api-docs:
+    path: /product-service/v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /product-service/swagger-ui.html
+    enabled: true
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+
+logging:
+  level:
+    org.springframework.web: DEBUG
