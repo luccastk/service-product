@@ -17,6 +17,8 @@ spring:
   messages:
     basename: messages
     encoding: UTF-8
+  kafka:
+    bootstrap-servers: kafka:29092
 
 openapi:
   service:
