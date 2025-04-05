@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.InputStream;
 
-@FeignClient(name = "file-service", url = "http://localhost:8080/file-service")
+@FeignClient(name = "file-service/v1/")
 public interface FileDownload {
 
     @GetMapping("/download/{request_id}")
