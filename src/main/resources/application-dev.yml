@@ -20,6 +20,9 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
 
+kafka:
+  topic: file-upload
+
 openapi:
   service:
     title: product-service doc

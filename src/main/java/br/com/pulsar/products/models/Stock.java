@@ -37,6 +37,10 @@ public class Stock {
     @JoinColumn(name = "T_PRODUCTS_PK_PRODUCT", nullable = false)
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "T_STORES_PK_STORE", nullable = false)
+    private Store store;
+
     @OneToMany(mappedBy = "stock", orphanRemoval = true)
     private List<Batch> batches;
 }
