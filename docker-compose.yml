@@ -13,22 +13,6 @@ services:
     ports:
       - "5436:5432"
 
-  stock-ms:
-    image: stock-ms
-    container_name: stock
-    build:
-      context: .
-    environment:
-      - DB_SERVER=db:5436
-      - POSTGRES_DB=products_db
-      - POSTGRES_USER=product_user
-      - POSTGRES_PASSWORD=products_db
-      - EUREKA_SERVER=server-eureka
-      - EUREKA=eureka
-    networks:
-      backend:
-    restart: always
-
 networks:
   backend:
 
