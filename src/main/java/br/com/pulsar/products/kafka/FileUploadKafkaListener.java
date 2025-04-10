@@ -21,11 +21,14 @@ public class FileUploadKafkaListener {
     @RetryableTopic(
             backoff = @Backoff(delay = 3000L),
             autoCreateTopics = "true",
-            include = {DuplicationException.class, EntityNotFoundException.class}
+            include = {DuplicationException.class, EntityNotFoundException.class},
+            listenerContainerFactory = "fileUploadListenerFactory",
+            kafkaTemplate = "fileUploadKafkaTemplate"
     )
     @KafkaListener(
             topics = "file.upload",
-            groupId = "file-upload-consumer"
+            groupId = "file-upload-consumer",
+            containerFactory = "fileUploadListenerFactory"
     )
     public void onMessage(FileUploadEvent event, Acknowledgment ack) {
         ack.acknowledge();

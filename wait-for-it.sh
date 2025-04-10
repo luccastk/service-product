@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Espera até que o serviço esteja disponível na URL
 HOST=$1
 PORT=$2

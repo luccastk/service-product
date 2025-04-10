@@ -2,6 +2,7 @@ package br.com.pulsar.products.services.csv;
 
 import br.com.pulsar.products.dtos.csv.ProductCsvDTO;
 import br.com.pulsar.products.dtos.kafka.FileUploadEvent;
+import br.com.pulsar.products.dtos.kafka.ProductCreateEvent;
 import br.com.pulsar.products.dtos.products.ProductWrapperDTO;
 import br.com.pulsar.products.exceptions.DuplicationException;
 import br.com.pulsar.products.feign.FileDownload;
@@ -9,6 +10,7 @@ import br.com.pulsar.products.mappers.CsvToDomainMapper;
 import br.com.pulsar.products.services.rest.ApiProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -24,6 +26,7 @@ public class FileHandler {
     private final FileDownload fileDownload;
     private final CsvProcessor csvProcessor;
     private final ApiProduct restProduct;
+    private final KafkaTemplate<String, ProductCreateEvent> kafkaTemplate;
 
     public void process(FileUploadEvent event) {
         ResponseEntity<byte[]> response = fileDownload.downloadFile(event.request_id());
@@ -41,5 +44,8 @@ public class FileHandler {
         } catch (IOException e) {
             throw new RuntimeException("Erro ao processar arquivo CSV", e);
         }
+
+        ProductCreateEvent statusEvent = new ProductCreateEvent(event.request_id(), "CREATED");
+        kafkaTemplate.send("file.process.status", event.request_id(), statusEvent);
     }
 }

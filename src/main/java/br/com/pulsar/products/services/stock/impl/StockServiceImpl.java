@@ -30,6 +30,7 @@ public class StockServiceImpl implements StockService {
     public Stock createStockForProduct(Product product, CreateProductDTO json) {
         Stock stock = stockMapper.toEntity(json.stock());
         stock.setProduct(product);
+        stock.setStore(product.getStore());
         return stock;
     }
 
