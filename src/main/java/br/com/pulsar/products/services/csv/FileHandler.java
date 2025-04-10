@@ -34,7 +34,7 @@ public class FileHandler {
                     .toList();
             ProductWrapperDTO json = CsvToDomainMapper.toWrapper(products);
             try {
-                restProduct.createProduct(event.store_id(), json);
+                restProduct.createProduct(event.storeId(), json);
             } catch (DuplicationException e) {
                 System.err.println("Produto já cadastrado. Ignorando duplicata para: " + json);
             }

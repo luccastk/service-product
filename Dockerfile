@@ -2,8 +2,6 @@ FROM maven:3.8.3-openjdk-17 AS builder
 
 LABEL authors="Japa2k"
 
-COPY settings.xml /root/.m2/settings.xml
-
 WORKDIR /app
 COPY . .
 RUN mvn clean package -f pom.xml -DskipTests
