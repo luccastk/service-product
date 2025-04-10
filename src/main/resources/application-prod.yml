@@ -19,9 +19,6 @@ spring:
     encoding: UTF-8
   kafka:
     bootstrap-servers: kafka:29092
-    retry:
-      topic:
-        enabled: true
 
 openapi:
   service:
