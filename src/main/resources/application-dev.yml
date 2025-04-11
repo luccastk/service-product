@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: product-service
+    name: service-product
   datasource:
     url: jdbc:postgresql://localhost:5436/products_db
     username: product_user
@@ -22,16 +22,16 @@ spring:
 
 openapi:
   service:
-    title: product-service doc
+    title: service-product doc
     version: 1.0.0
     url: http://localhost:8080
 
 springdoc:
   api-docs:
-    path: /product-service/v3/api-docs
+    path: /v3/api-docs
     enabled: true
   swagger-ui:
-    path: /product-service/swagger-ui.html
+    path: /swagger-ui.html
     enabled: true
 
 eureka:

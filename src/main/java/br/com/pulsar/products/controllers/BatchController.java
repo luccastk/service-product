@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/product-service/v1/stores")
+@RequestMapping("/v1/stores")
 @Tag(name = "Batch management", description = "APIs for managing batches")
 @RequiredArgsConstructor
 public class BatchController {

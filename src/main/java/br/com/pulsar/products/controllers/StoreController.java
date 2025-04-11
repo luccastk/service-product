@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/product-service/v1/stores")
+@RequestMapping("/v1/stores")
 @RequiredArgsConstructor
 @Tag(name = "Store management", description = "APIs for managing stores")
 public class StoreController {
