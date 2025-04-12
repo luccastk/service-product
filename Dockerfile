@@ -6,7 +6,7 @@ COPY settings.xml /root/.m2/settings.xml
 
 WORKDIR /app
 COPY . .
-RUN mvn clean package -f pom.xml -DskipTests
+RUN mvn clean package -s /root/.m2/settings.xml -f pom.xml -DskipTests
 
 FROM eclipse-temurin:17-jdk-alpine
 
