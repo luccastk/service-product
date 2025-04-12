@@ -18,7 +18,7 @@ spring:
     basename: messages
     encoding: UTF-8
   kafka:
-    bootstrap-servers: kafka:29092
+    bootstrap-servers: ${KAFKA_SERVER}
 
 openapi:
   service:
@@ -45,7 +45,3 @@ eureka:
     prefer-ip-address: true
     lease-renewal-interval-in-seconds: 10
     lease-expiration-duration-in-seconds: 30
-
-logging:
-  level:
-    org.springframework.web: DEBUG
