@@ -11,15 +11,17 @@ import br.com.pulsar.products.models.Stock;
 import br.com.pulsar.products.models.Store;
 import br.com.pulsar.products.repositories.ProductRepository;
 import br.com.pulsar.products.services.batch.BatchService;
+import br.com.pulsar.products.services.batch.impl.BatchServiceImpl;
 import br.com.pulsar.products.services.find.FindService;
-import br.com.pulsar.products.services.stock.StockService;
 import br.com.pulsar.products.services.product.ProductService;
+import br.com.pulsar.products.services.stock.StockService;
+import br.com.pulsar.products.services.stock.impl.StockServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

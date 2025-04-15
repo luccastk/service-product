@@ -1,4 +1,4 @@
-package br.com.pulsar.products.configs.kafka.dispatcher;
+package br.com.pulsar.products.configs.kafka;
 
 import br.com.pulsar.products.dtos.kafka.FileUploadEvent;
 import br.com.pulsar.products.dtos.kafka.ProductCreateEvent;

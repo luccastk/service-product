@@ -3,7 +3,6 @@ package br.com.pulsar.products.dtos.http;
 import br.com.pulsar.products.dtos.stock.StockDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
 import java.util.UUID;
 
 public record ResponseProductDTO(

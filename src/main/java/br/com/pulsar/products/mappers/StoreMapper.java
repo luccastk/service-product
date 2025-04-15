@@ -1,8 +1,7 @@
 package br.com.pulsar.products.mappers;
 
-import br.com.pulsar.products.dtos.store.CreateStoreDTO;
-import br.com.pulsar.products.dtos.store.StoreDTO;
 import br.com.pulsar.products.dtos.http.ResponseStoreDTO;
+import br.com.pulsar.products.dtos.store.CreateStoreDTO;
 import br.com.pulsar.products.models.Store;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,8 +19,6 @@ public interface StoreMapper {
     Store ToEntity(CreateStoreDTO dto);
 
     ResponseStoreDTO ToDTO(Store entity);
-
-    List<Store> ToEntity(List<CreateStoreDTO> dto);
 
     List<ResponseStoreDTO> ToDTO(List<Store> entity);
 }

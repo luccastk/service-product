@@ -2,10 +2,8 @@ package br.com.pulsar.products.services.rest;
 
 import br.com.pulsar.products.dtos.batch.BatchWrapperDTO;
 import br.com.pulsar.products.dtos.batch.UpdateBatchDTO;
-import br.com.pulsar.products.dtos.http.ResponseBatchDTO;
 import br.com.pulsar.products.dtos.http.ResponseWrapperBatchDTO;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ApiBatch {

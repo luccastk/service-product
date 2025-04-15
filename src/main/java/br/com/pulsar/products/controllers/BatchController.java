@@ -111,13 +111,13 @@ public class BatchController {
             @PathVariable UUID batchId,
             @RequestBody UpdateBatchDTO dto
     ){
-        return ResponseEntity.ok((new DataPresenter<>(apiBatch.updateBatch(storeId, batchId, dto))));
+        return ResponseEntity.ok(new DataPresenter<>(apiBatch.updateBatch(storeId, batchId, dto)));
     }
 
     @Operation(summary = "Get products expiring", description = "Get a list of products with validity expiring soon.")
     @ApiResponses(value = {
             @ApiResponse(responseCode  = "200", description = "OK",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseBatchDTO.class)) } ),
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseBatchDTO.class)) }),
             @ApiResponse(responseCode  = "400", description = "The request find a error",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) }),
             @ApiResponse(responseCode  = "403", description = "You don't have permission to access",

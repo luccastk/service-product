@@ -1,15 +1,13 @@
 package br.com.pulsar.products.services.rest.impl;
 
-import br.com.pulsar.products.dtos.http.ResponseStoreDTO;
 import br.com.pulsar.products.dtos.http.ResponseWrapperStoreDTO;
 import br.com.pulsar.products.dtos.store.StoreWrapperDTO;
 import br.com.pulsar.products.dtos.store.UpdateStoreDTO;
 import br.com.pulsar.products.mappers.StoreMapper;
-import br.com.pulsar.products.services.store.StoreService;
 import br.com.pulsar.products.services.rest.ApiStore;
+import br.com.pulsar.products.services.store.StoreService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 

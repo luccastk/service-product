@@ -3,18 +3,17 @@ package br.com.pulsar.products.services.stock.impl;
 import br.com.pulsar.products.dtos.batch.CreateBatchDTO;
 import br.com.pulsar.products.dtos.products.CreateProductDTO;
 import br.com.pulsar.products.dtos.stock.UpdateStockDTO;
-import br.com.pulsar.products.mappers.BatchMapper;
 import br.com.pulsar.products.mappers.StockMapper;
 import br.com.pulsar.products.models.Batch;
 import br.com.pulsar.products.models.Product;
 import br.com.pulsar.products.models.Stock;
 import br.com.pulsar.products.repositories.StockRepository;
-import br.com.pulsar.products.services.batch.BatchService;
 import br.com.pulsar.products.services.find.FindService;
 import br.com.pulsar.products.services.stock.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 

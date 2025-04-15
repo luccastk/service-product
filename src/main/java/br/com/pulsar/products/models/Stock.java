@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -41,6 +38,6 @@ public class Stock {
     @JoinColumn(name = "T_STORES_PK_STORE", nullable = false)
     private Store store;
 
-    @OneToMany(mappedBy = "stock", orphanRemoval = true)
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Batch> batches;
 }

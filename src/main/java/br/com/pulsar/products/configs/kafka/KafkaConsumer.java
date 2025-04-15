@@ -1,4 +1,4 @@
-package br.com.pulsar.products.configs.kafka.consumer;
+package br.com.pulsar.products.configs.kafka;
 
 import br.com.pulsar.products.dtos.kafka.FileUploadEvent;
 import com.pulsar.common.common_kafka.consumer.KafkaEventConsumer;
@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.stereotype.Component;
 
 @Configuration
 public class KafkaConsumer {

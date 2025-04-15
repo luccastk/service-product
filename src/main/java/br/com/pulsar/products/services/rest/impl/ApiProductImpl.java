@@ -7,11 +7,9 @@ import br.com.pulsar.products.dtos.products.UpdateProductDTO;
 import br.com.pulsar.products.mappers.ProductMapper;
 import br.com.pulsar.products.models.Product;
 import br.com.pulsar.products.models.Store;
-import br.com.pulsar.products.services.batch.BatchService;
 import br.com.pulsar.products.services.find.FindService;
 import br.com.pulsar.products.services.product.ProductService;
 import br.com.pulsar.products.services.rest.ApiProduct;
-import br.com.pulsar.products.services.stock.StockService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

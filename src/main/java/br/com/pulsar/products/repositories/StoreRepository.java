@@ -1,7 +1,6 @@
 package br.com.pulsar.products.repositories;
 
 import br.com.pulsar.products.models.Store;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

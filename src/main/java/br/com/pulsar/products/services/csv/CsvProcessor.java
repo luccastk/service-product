@@ -3,7 +3,6 @@ package br.com.pulsar.products.services.csv;
 import br.com.pulsar.products.dtos.csv.ProductCsvDTO;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.exceptions.CsvException;
 import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.stereotype.Service;
 

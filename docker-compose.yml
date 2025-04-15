@@ -1,7 +1,7 @@
 services:
-  db-products:
+  db-test:
     image: postgres:17
-    container_name: db-products
+    container_name: db-test
     environment:
       - POSTGRES_DB=products_db
       - POSTGRES_USER=product_user

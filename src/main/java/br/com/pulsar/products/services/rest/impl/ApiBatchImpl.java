@@ -1,9 +1,7 @@
 package br.com.pulsar.products.services.rest.impl;
 
 import br.com.pulsar.products.dtos.batch.BatchWrapperDTO;
-import br.com.pulsar.products.dtos.batch.CreateBatchDTO;
 import br.com.pulsar.products.dtos.batch.UpdateBatchDTO;
-import br.com.pulsar.products.dtos.http.ResponseBatchDTO;
 import br.com.pulsar.products.dtos.http.ResponseWrapperBatchDTO;
 import br.com.pulsar.products.mappers.BatchMapper;
 import br.com.pulsar.products.models.Product;
