@@ -113,24 +113,24 @@ public class BatchController {
     ){
         return ResponseEntity.ok(new DataPresenter<>(apiBatch.updateBatch(storeId, batchId, dto)));
     }
-
-    @Operation(summary = "Get products expiring", description = "Get a list of products with validity expiring soon.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode  = "200", description = "OK",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseBatchDTO.class)) }),
-            @ApiResponse(responseCode  = "400", description = "The request find a error",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) }),
-            @ApiResponse(responseCode  = "403", description = "You don't have permission to access",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) }),
-            @ApiResponse(responseCode  = "404", description = "Content Not Found",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) }),
-            @ApiResponse(responseCode  = "500", description = "The server have a error",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) })
-    })
-    @GetMapping("/{storeId}/batches/expiring")
-    public ResponseEntity<DataPresenter<List<ResponseWrapperBatchDTO>>> expiringProducts(
-            @PathVariable UUID storeId
-    ){
-        return ResponseEntity.ok(new DataPresenter<>());
-    }
+//
+//    @Operation(summary = "Get products expiring", description = "Get a list of products with validity expiring soon.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode  = "200", description = "OK",
+//                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseBatchDTO.class)) }),
+//            @ApiResponse(responseCode  = "400", description = "The request find a error",
+//                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) }),
+//            @ApiResponse(responseCode  = "403", description = "You don't have permission to access",
+//                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) }),
+//            @ApiResponse(responseCode  = "404", description = "Content Not Found",
+//                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) }),
+//            @ApiResponse(responseCode  = "500", description = "The server have a error",
+//                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPresenter.class)) })
+//    })
+//    @GetMapping("/{storeId}/batches/expiring")
+//    public ResponseEntity<DataPresenter<List<ResponseWrapperBatchDTO>>> expiringProducts(
+//            @PathVariable UUID storeId
+//    ){
+//        return ResponseEntity.ok(new DataPresenter<>());
+//    }
 }

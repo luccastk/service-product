@@ -51,6 +51,8 @@ class StoreServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        storeId = UUID.randomUUID();
+
         createStoreDTO = new CreateStoreDTO(
                 "Store test"
         );
