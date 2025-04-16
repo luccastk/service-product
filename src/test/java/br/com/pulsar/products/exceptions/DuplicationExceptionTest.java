@@ -2,10 +2,14 @@ package br.com.pulsar.products.exceptions;
 
 import br.com.pulsar.products.dtos.products.CreateProductDTO;
 import br.com.pulsar.products.mappers.ProductMapper;
+import br.com.pulsar.products.models.Batch;
 import br.com.pulsar.products.models.Product;
+import br.com.pulsar.products.models.Stock;
 import br.com.pulsar.products.models.Store;
 import br.com.pulsar.products.repositories.ProductRepository;
+import br.com.pulsar.products.services.batch.BatchService;
 import br.com.pulsar.products.services.product.impl.ProductServiceImpl;
+import br.com.pulsar.products.services.stock.StockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,9 +18,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DuplicationExceptionTest {
@@ -30,9 +36,14 @@ class DuplicationExceptionTest {
     @Mock
     private ProductMapper productMapper;
 
+    @Mock
+    private StockService stockService;
+
+    @Mock
+    private BatchService batchService;
+
     @InjectMocks
     private ProductServiceImpl productService;
-
 
     @BeforeEach
     void setUp() {
@@ -53,9 +64,13 @@ class DuplicationExceptionTest {
     @Test
     void shouldNotThrowDuplicateException() {
         Product product = new Product();
+        Stock stock = new Stock();
+        Batch batch = new Batch();
 
-        BDDMockito.given(productRepository.existsByNameIgnoringCase(createProductDTO.name())).willReturn(false);
-        BDDMockito.given(productMapper.ToEntity(createProductDTO)).willReturn(product);
+        given(productRepository.existsByNameIgnoringCase(createProductDTO.name())).willReturn(false);
+        given(productMapper.ToEntity(createProductDTO)).willReturn(product);
+        given(stockService.createStockForProduct(product, createProductDTO)).willReturn(stock);
+        given(batchService.createBatch(stock, createProductDTO.batch())).willReturn(List.of(batch));
 
         assertDoesNotThrow(() -> productService.saveProducts(store, createProductDTO));
     }
@@ -63,7 +78,7 @@ class DuplicationExceptionTest {
     @Test
     void shouldThrowDuplicateException() {
 
-        BDDMockito.given(productRepository.existsByNameIgnoringCase(createProductDTO.name())).willReturn(true);
+        given(productRepository.existsByNameIgnoringCase(createProductDTO.name())).willReturn(true);
 
         assertThrows(DuplicationException.class, () -> productService.saveProducts(store, createProductDTO));
     }

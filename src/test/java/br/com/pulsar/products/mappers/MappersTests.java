@@ -24,8 +24,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
@@ -122,11 +121,25 @@ class MappersTests {
     }
 
     @Test
+    void shouldReturnStoreNull() {
+        Store store1 = storeMapper.ToEntity(null);
+
+        assertNull(store1);
+    }
+
+    @Test
     void shouldMapperResponseStore() {
         ResponseStoreDTO responseStoreDTO = storeMapper.ToDTO(store);
 
         assertNotNull(responseStoreDTO);
         assertEquals(responseStoreDTO.name(), store.getName());
+    }
+
+    @Test
+    void shouldReturnResponseNull() {
+        ResponseStoreDTO responseStoreDTO = storeMapper.ToDTO((Store) null);
+
+        assertNull(responseStoreDTO);
     }
 
     @Test
@@ -139,6 +152,13 @@ class MappersTests {
     }
 
     @Test
+    void shouldReturnResponseListNull() {
+        List<ResponseStoreDTO> responseStoreDTOList = storeMapper.ToDTO((List<Store>) null);
+
+        assertNull(responseStoreDTOList);
+    }
+
+    @Test
     void shouldMapperProduct() {
         Product product1 = productMapper.ToEntity(createProductDTO);
 
@@ -147,11 +167,25 @@ class MappersTests {
     }
 
     @Test
+    void shouldReturnProductNull() {
+        Product product1 = productMapper.ToEntity((CreateProductDTO) null);
+
+        assertNull(product1);
+    }
+
+    @Test
     void shouldMapperProductList() {
         List<Product> products = productMapper.ToEntity(List.of(createProductDTO));
 
         assertNotNull(products);
         assertEquals(products.get(0).getName(), createProductDTO.name());
+    }
+
+    @Test
+    void shouldReturnProductListNull() {
+        List<Product> products = productMapper.ToEntity((List<CreateProductDTO>) null);
+
+        assertNull(products);
     }
 
     @Test
@@ -164,11 +198,25 @@ class MappersTests {
     }
 
     @Test
+    void shouldResponseProductResponseNull() {
+        ResponseProductDTO responseProductDTO = productMapper.ToDTO((Product) null);
+
+        assertNull(responseProductDTO);
+    }
+
+    @Test
     void shouldMapperProductListToResponseProduct() {
         List<ResponseProductDTO> responseProductDTOS = productMapper.ToDTO(List.of(product));
 
         assertNotNull(responseProductDTOS);
         assertEquals(responseProductDTOS.get(0).name(), product.getName());
+    }
+
+    @Test
+    void shouldReturnProductListResponseNull() {
+        List<ResponseProductDTO> responseProductDTOS = productMapper.ToDTO((List<Product>) null);
+
+        assertNull(responseProductDTOS);
     }
 
     @Test
@@ -180,11 +228,25 @@ class MappersTests {
     }
 
     @Test
+    void shouldReturnStockNull() {
+        Stock stock1 = stockMapper.toEntity(null);
+
+        assertNull(stock1);
+    }
+
+    @Test
     void shouldMapperStockDto() {
         StockDTO stockDTO = stockMapper.toDTO(stock);
 
         assertNotNull(stockDTO);
         assertEquals(stockDTO.price(), stock.getPrice());
+    }
+
+    @Test
+    void shouldReturnStockResponseNull() {
+        StockDTO stockDTO = stockMapper.toDTO(null);
+
+        assertNull(stockDTO);
     }
 
     @Test
@@ -197,12 +259,26 @@ class MappersTests {
     }
 
     @Test
+    void shouldReturnBatchNull() {
+        Batch batch1 = batchMapper.toEntity((CreateBatchDTO) null);
+
+        assertNull(batch1);
+    }
+
+    @Test
     void shouldMapperBatchesList() {
         List<Batch> batches = batchMapper.toEntity(List.of(createBatchDTO));
 
         assertNotNull(batches);
         assertEquals(batches.get(0).getQuantity(), createBatchDTO.quantity());
         assertEquals(batches.get(0).getValidity(), createBatchDTO.validity());
+    }
+
+    @Test
+    void shouldReturnBatchesListNull() {
+        List<Batch> batches = batchMapper.toEntity((List<CreateBatchDTO>) null);
+
+        assertNull(batches);
     }
 
     @Test
@@ -214,11 +290,47 @@ class MappersTests {
     }
 
     @Test
+    void shouldReturnBatchResponseNull() {
+        ResponseBatchDTO responseBatchDTO = batchMapper.toDTOResponse((Batch) null);
+
+        assertNull(responseBatchDTO);
+    }
+
+    @Test
     void shouldMapperBatchesToResponseBatches() {
         List<ResponseBatchDTO> responseBatchDTOS = batchMapper.toDTOResponse(List.of(batch));
 
         assertNotNull(responseBatchDTOS);
         assertEquals(responseBatchDTOS.get(0).batchId(), batch.getId());
+    }
+
+    @Test
+    void shouldReturnBatchListResponseNull() {
+        List<ResponseBatchDTO> responseBatchDTOS = batchMapper.toDTOResponse((List<Batch>) null);
+
+        assertNull(responseBatchDTOS);
+    }
+    @Test
+    void shouldReturnNullWhenStockIsNull() {
+        Batch batch = new Batch();
+        batch.setStock(null);
+
+        ResponseBatchDTO result = batchMapper.toDTOResponse(batch);
+        assertNull(result.productId());
+        assertNull(result.name());
+    }
+
+    @Test
+    void shouldReturnNullWhenProductIsNull() {
+        Stock stock = new Stock();
+        stock.setProduct(null);
+
+        Batch batch = new Batch();
+        batch.setStock(stock);
+
+        ResponseBatchDTO result = batchMapper.toDTOResponse(batch);
+        assertNull(result.productId());
+        assertNull(result.name());
     }
 
     @Test

@@ -10,6 +10,10 @@ import java.util.List;
 
 public class CsvToDomainMapper {
 
+    private CsvToDomainMapper() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static CreateProductDTO map(ProductCsvDTO csv) {
         CreateStockDTO stock = new CreateStockDTO(csv.getPrice());
 
