@@ -69,7 +69,7 @@ class DuplicationExceptionTest {
 
         given(productRepository.existsByNameIgnoringCase(createProductDTO.name())).willReturn(false);
         given(productMapper.ToEntity(createProductDTO)).willReturn(product);
-        given(stockService.createStockForProduct(product, createProductDTO)).willReturn(stock);
+        given(stockService.createStockForProduct(product, createProductDTO.stock())).willReturn(stock);
         given(batchService.createBatch(stock, createProductDTO.batch())).willReturn(List.of(batch));
 
         assertDoesNotThrow(() -> productService.saveProducts(store, createProductDTO));

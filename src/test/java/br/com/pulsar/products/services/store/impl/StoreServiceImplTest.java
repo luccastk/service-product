@@ -9,6 +9,7 @@ import br.com.pulsar.products.models.Product;
 import br.com.pulsar.products.models.Store;
 import br.com.pulsar.products.repositories.StoreRepository;
 import br.com.pulsar.products.services.find.FindService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,6 +61,7 @@ class StoreServiceImplTest {
         store = new Store();
         store.setId(storeId);
         store.setName(createStoreDTO.name());
+        store.setActive(true);
 
         updateStoreDTO = new UpdateStoreDTO(
                 "New store name",
@@ -101,20 +103,17 @@ class StoreServiceImplTest {
 
     @Test
     void shouldUpdateStore() {
-        Store exitingStore = new Store();
-        exitingStore.setId(storeId);
-        exitingStore.setName("Old store name");
-        exitingStore.setActive(false);
+        store.setActive(false);
 
-        given(findService.findStoreId(storeId)).willReturn(exitingStore);
-        given(storeRepository.save(exitingStore)).willReturn(exitingStore);
+        given(findService.findStoreId(storeId)).willReturn(store);
+        given(storeRepository.save(store)).willReturn(store);
 
         Store result = storeService.updateStore(storeId, updateStoreDTO);
 
         assertEquals(updateStoreDTO.name(), result.getName());
         assertTrue(result.getActive());
 
-        verify(storeRepository).save(exitingStore);
+        verify(storeRepository).save(store);
     }
 
     @Test
@@ -128,18 +127,21 @@ class StoreServiceImplTest {
     }
 
     @Test
-    void shouldDeactivateStore() {
-        Store activateStore = new Store();
-        activateStore.setId(storeId);
-        activateStore.setActive(true);
+    void shouldNotFoundStore() {
+        given(findService.findStoreId(storeId)).willThrow(EntityNotFoundException.class);
 
-        given(findService.findStoreId(storeId)).willReturn(activateStore);
-        given(storeRepository.save(activateStore)).willReturn(activateStore);
+        assertThrows(EntityNotFoundException.class, () -> storeService.findStore(storeId));
+    }
+
+    @Test
+    void shouldDeactivateStore() {
+        given(findService.findStoreId(storeId)).willReturn(store);
+        given(storeRepository.save(store)).willReturn(store);
 
         storeService.deActiveStore(storeId);
 
-        assertFalse(activateStore.getActive());
+        assertFalse(store.getActive());
 
-        verify(storeRepository).save(activateStore);
+        verify(storeRepository).save(store);
     }
 }

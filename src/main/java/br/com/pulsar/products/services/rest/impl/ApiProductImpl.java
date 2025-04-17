@@ -47,11 +47,6 @@ public class ApiProductImpl implements ApiProduct {
     }
 
     @Override
-    public ResponseProductDTO listProductsByStoreId(UUID storeId) {
-        return null;
-    }
-
-    @Override
     public ResponseWrapperProductDTO listPageProductsActive(UUID storeId, String cursor, int limit) {
         return productService.listProductPerStore(storeId, cursor, limit);
     }

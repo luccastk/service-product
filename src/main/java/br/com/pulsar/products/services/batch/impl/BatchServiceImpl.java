@@ -33,9 +33,15 @@ public class BatchServiceImpl implements BatchService {
             i.setStock(stock);
         });
 
-        stockService.updateStockQuantity(stock, stockService.sumQuantities(json));
+        stockService.updateStockQuantity(stock, sumQuantities(json));
 
         return batchRepository.saveAll(batches);
+    }
+
+    private Integer sumQuantities(List<CreateBatchDTO> json) {
+        return json.stream()
+                .mapToInt(CreateBatchDTO::quantity)
+                .sum();
     }
 
     @Override

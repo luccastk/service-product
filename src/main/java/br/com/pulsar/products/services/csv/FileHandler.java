@@ -1,22 +1,16 @@
 package br.com.pulsar.products.services.csv;
 
-import br.com.pulsar.products.dtos.csv.ProductCsvDTO;
 import br.com.pulsar.products.dtos.kafka.FileUploadEvent;
-import br.com.pulsar.products.dtos.kafka.ProductCreateEvent;
-import br.com.pulsar.products.dtos.products.ProductWrapperDTO;
-import br.com.pulsar.products.exceptions.DuplicationException;
 import br.com.pulsar.products.feign.FileDownload;
-import br.com.pulsar.products.mappers.CsvToDomainMapper;
-import br.com.pulsar.products.services.rest.ApiProduct;
+import br.com.pulsar.products.kafka.PublishStatusProduct;
+import br.com.pulsar.products.services.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -24,28 +18,21 @@ import java.util.Objects;
 public class FileHandler {
 
     private final FileDownload fileDownload;
-    private final CsvProcessor csvProcessor;
-    private final ApiProduct restProduct;
-    private final KafkaTemplate<String, ProductCreateEvent> kafkaTemplate;
+    private final ProductService productService;
+    private final PublishStatusProduct publishStatusProduct;
 
     public void process(FileUploadEvent event) {
-        ResponseEntity<byte[]> response = fileDownload.downloadFile(event.request_id());
 
-        try (InputStream is = new ByteArrayInputStream(Objects.requireNonNull(response.getBody()))) {
-            List<ProductCsvDTO> products = csvProcessor.parse(is);
-            products = products.stream().filter(product -> product.getBatchValidity() != null)
-                    .toList();
-            ProductWrapperDTO json = CsvToDomainMapper.toWrapper(products);
-            try {
-                restProduct.createProduct(event.storeId(), json);
-            } catch (DuplicationException e) {
-                System.err.println("Produto já cadastrado. Ignorando duplicata para: " + json);
-            }
+        ResponseEntity<byte[]> response = fileDownload.downloadFile(event.request_id());
+        InputStream is = new ByteArrayInputStream(Objects.requireNonNull(response.getBody()));
+
+        try (is) {
+            productService.convertCsvToEntity(event.storeId(), is);
+
         } catch (IOException e) {
             throw new RuntimeException("Erro ao processar arquivo CSV", e);
         }
 
-        ProductCreateEvent statusEvent = new ProductCreateEvent(event.request_id(), "CREATED");
-        kafkaTemplate.send("file.process.status", event.request_id(), statusEvent);
+        publishStatusProduct.send(event.request_id());
     }
 }

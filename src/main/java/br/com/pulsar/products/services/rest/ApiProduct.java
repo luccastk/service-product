@@ -11,7 +11,6 @@ import java.util.UUID;
 public interface ApiProduct {
     List<ResponseProductDTO> createProduct(UUID storeId, ProductWrapperDTO json);
     ResponseProductDTO getProductById(UUID storeId, UUID productId);
-    ResponseProductDTO listProductsByStoreId(UUID storeId);
     ResponseWrapperProductDTO listPageProductsActive(UUID storeId, String cursor, int limit);
     ResponseProductDTO updateProduct(UUID storeId, UUID productId, UpdateProductDTO json);
     void deActivateProduct(UUID storeId, UUID productId);

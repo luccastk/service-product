@@ -2,6 +2,7 @@ package br.com.pulsar.products.services.stock.impl;
 
 import br.com.pulsar.products.dtos.batch.CreateBatchDTO;
 import br.com.pulsar.products.dtos.products.CreateProductDTO;
+import br.com.pulsar.products.dtos.stock.CreateStockDTO;
 import br.com.pulsar.products.dtos.stock.UpdateStockDTO;
 import br.com.pulsar.products.mappers.StockMapper;
 import br.com.pulsar.products.models.Batch;
@@ -26,18 +27,11 @@ public class StockServiceImpl implements StockService {
     private final FindService find;
 
     @Override
-    public Stock createStockForProduct(Product product, CreateProductDTO json) {
-        Stock stock = stockMapper.toEntity(json.stock());
+    public Stock createStockForProduct(Product product, CreateStockDTO json) {
+        Stock stock = stockMapper.toEntity(json);
         stock.setProduct(product);
         stock.setStore(product.getStore());
         return stock;
-    }
-
-    @Override
-    public Integer sumQuantities(List<CreateBatchDTO> json) {
-        return json.stream()
-                .mapToInt(CreateBatchDTO::quantity)
-                .sum();
     }
 
     @Override
@@ -54,7 +48,11 @@ public class StockServiceImpl implements StockService {
     public Stock updatePrice(UUID storeId, UUID productId, UpdateStockDTO json) {
         Product product = find.findProductByStoreAndId(storeId, productId);
         Stock stock = product.getStock();
-        stock.setPrice(json.price());
+
+        if (json.price() != null) {
+            stock.setPrice(json.price());
+        }
+
         return stockRepository.save(stock);
     }
 }

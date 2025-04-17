@@ -1,9 +1,12 @@
 package br.com.pulsar.products.services.product.impl;
 
+import br.com.pulsar.products.dtos.csv.ProductCsvDTO;
 import br.com.pulsar.products.dtos.http.ResponseWrapperProductDTO;
 import br.com.pulsar.products.dtos.products.CreateProductDTO;
+import br.com.pulsar.products.dtos.products.ProductWrapperDTO;
 import br.com.pulsar.products.dtos.products.UpdateProductDTO;
 import br.com.pulsar.products.exceptions.DuplicationException;
+import br.com.pulsar.products.mappers.CsvToDomainMapper;
 import br.com.pulsar.products.mappers.ProductMapper;
 import br.com.pulsar.products.models.Batch;
 import br.com.pulsar.products.models.Product;
@@ -12,6 +15,7 @@ import br.com.pulsar.products.models.Store;
 import br.com.pulsar.products.repositories.ProductRepository;
 import br.com.pulsar.products.services.batch.BatchService;
 import br.com.pulsar.products.services.batch.impl.BatchServiceImpl;
+import br.com.pulsar.products.services.csv.CsvProcessor;
 import br.com.pulsar.products.services.find.FindService;
 import br.com.pulsar.products.services.product.ProductService;
 import br.com.pulsar.products.services.stock.StockService;
@@ -20,6 +24,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final StockService stockService;
     private final BatchService batchService;
     private final FindService find;
+    private final CsvProcessor csvProcessor;
 
     @Transactional
     @Override
@@ -41,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productMapper.ToEntity(json);
         product.setStore(store);
 
-        Stock stock = stockService.createStockForProduct(product, json);
+        Stock stock = stockService.createStockForProduct(product, json.stock());
         product.setStock(stock);
         productRepository.save(product);
 
@@ -109,5 +115,21 @@ public class ProductServiceImpl implements ProductService {
                 productMapper.ToDTO(productList),
                 nextCursor
         );
+    }
+
+    @Override
+    public void convertCsvToEntity(UUID storeId, InputStream is) {
+        Store store = find.findStoreId(storeId);
+
+        List<ProductCsvDTO> products = csvProcessor.parse(is);
+
+        products = products.stream().filter(product -> product.getBatchValidity() != null)
+                .toList();
+
+        ProductWrapperDTO productWrapperDTO = CsvToDomainMapper.toWrapper(products);
+
+        productWrapperDTO.products().forEach(product -> {
+            saveProducts(store, product);
+        });
     }
 }
