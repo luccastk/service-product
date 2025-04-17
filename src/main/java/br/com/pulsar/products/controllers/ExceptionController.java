@@ -26,7 +26,7 @@ public class ExceptionController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorPresenter> handlerEntityNotFoundException(EntityNotFoundException ex) {
-        return new ResponseEntity<>(new ErrorPresenter(HttpStatus.BAD_REQUEST.value(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorPresenter(HttpStatus.NOT_FOUND.value(), ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DuplicationException.class)

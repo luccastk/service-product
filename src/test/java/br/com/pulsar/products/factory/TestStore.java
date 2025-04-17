@@ -30,6 +30,14 @@ public class TestStore {
         );
     }
 
+    public static ResponseStoreDTO responseStoreDTOUsingStore(Store store) {
+        return new ResponseStoreDTO(
+                store.getId(),
+                store.getName(),
+                true
+        );
+    }
+
     public static CreateStoreDTO createStoreDTO() {
         return new CreateStoreDTO(
                 NAME_FOR_STORE
