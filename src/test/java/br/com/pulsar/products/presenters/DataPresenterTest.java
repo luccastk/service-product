@@ -1,5 +1,6 @@
 package br.com.pulsar.products.presenters;
 
+import br.com.pulsar.products.domain.presenters.DataPresenter;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 

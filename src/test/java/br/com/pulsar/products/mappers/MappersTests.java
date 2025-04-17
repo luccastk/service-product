@@ -1,33 +1,39 @@
 package br.com.pulsar.products.mappers;
 
-import br.com.pulsar.products.dtos.batch.CreateBatchDTO;
-import br.com.pulsar.products.dtos.csv.ProductCsvDTO;
-import br.com.pulsar.products.dtos.http.ResponseBatchDTO;
-import br.com.pulsar.products.dtos.http.ResponseProductDTO;
-import br.com.pulsar.products.dtos.http.ResponseStoreDTO;
-import br.com.pulsar.products.dtos.products.CreateProductDTO;
-import br.com.pulsar.products.dtos.products.ProductWrapperDTO;
-import br.com.pulsar.products.dtos.stock.CreateStockDTO;
-import br.com.pulsar.products.dtos.stock.StockDTO;
-import br.com.pulsar.products.dtos.store.CreateStoreDTO;
-import br.com.pulsar.products.models.Batch;
-import br.com.pulsar.products.models.Product;
-import br.com.pulsar.products.models.Stock;
-import br.com.pulsar.products.models.Store;
+import br.com.pulsar.products.domain.dtos.batch.CreateBatchDTO;
+import br.com.pulsar.products.domain.dtos.csv.ProductCsvDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseBatchDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseProductDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseStoreDTO;
+import br.com.pulsar.products.domain.dtos.products.CreateProductDTO;
+import br.com.pulsar.products.domain.dtos.products.ProductWrapperDTO;
+import br.com.pulsar.products.domain.dtos.stock.CreateStockDTO;
+import br.com.pulsar.products.domain.dtos.stock.StockDTO;
+import br.com.pulsar.products.domain.dtos.store.CreateStoreDTO;
+import br.com.pulsar.products.domain.mappers.*;
+import br.com.pulsar.products.domain.models.Batch;
+import br.com.pulsar.products.domain.models.Product;
+import br.com.pulsar.products.domain.models.Stock;
+import br.com.pulsar.products.domain.models.Store;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
+import static br.com.pulsar.products.factory.TestBatch.*;
+import static br.com.pulsar.products.factory.TestCsvProducts.*;
+import static br.com.pulsar.products.factory.TestProduct.*;
+import static br.com.pulsar.products.factory.TestStock.*;
+import static br.com.pulsar.products.factory.TestStore.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class MappersTests {
 
     @Autowired
@@ -53,70 +59,35 @@ class MappersTests {
     @BeforeEach
     void setUp() {
 
-        store = new Store();
-        store.setPk(1L);
-        store.setId(UUID.randomUUID());
-        store.setName("Store test");
-        store.setActive(true);
-
-        product = new Product();
-        product.setName("Product test");
-        product.setPk(1L);
-        product.setId(UUID.randomUUID());
-        product.setActive(true);
-        product.setStore(store);
+        store = createStore();
+        product = createProduct();
+        stock = createStock();
+        batch = createBatch();
 
         store.setProducts(List.of(product));
-
-        stock = new Stock();
-        stock.setPk(1L);
-        stock.setPrice(BigDecimal.valueOf(10));
-        stock.setStore(store);
-        stock.setProduct(product);
-
+        product.setStore(store);
         product.setStock(stock);
 
-        batch = new Batch();
-        batch.setPk(1L);
-        batch.setId(UUID.randomUUID());
-        batch.setQuantity(10);
-        batch.setValidity(LocalDate.now().plusMonths(8));
-        batch.setStock(stock);
-
+        stock.setStore(store);
+        stock.setProduct(product);
         stock.setBatches(List.of(batch));
-        stock.setQuantity(batch.getQuantity());
 
-        createStockDTO = new CreateStockDTO(
-                BigDecimal.valueOf(20)
-        );
+        createStockDTO = createStockDTO();
 
-        createBatchDTO = new CreateBatchDTO(
-                10,
-                LocalDate.now().plusMonths(10)
-        );
+        createBatchDTO = createBatchDTO();
 
-        createProductDTO = new CreateProductDTO(
-                "Product test",
-                createStockDTO,
-                List.of(createBatchDTO)
-        );
+        createProductDTO = createProductDTO();
 
-        createStoreDTO = new CreateStoreDTO(
-                "Store test"
-        );
+        createStoreDTO = createStoreDTO();
 
-        productCsvDTO = new ProductCsvDTO();
-        productCsvDTO.setName("Product csv test");
-        productCsvDTO.setPrice(BigDecimal.valueOf(40));
-        productCsvDTO.setBatchQuantity(10);
-        productCsvDTO.setBatchValidity(LocalDate.now().plusMonths(10));
+        productCsvDTO = createProductCsvDTO();
     }
 
     @Test
     void shouldMapperStore() {
         Store store1 = storeMapper.ToEntity(createStoreDTO);
 
-        assertNotNull(store1, "Store must not be null.");
+        assertNotNull(store1);
         assertEquals(store1.getName(), createStoreDTO.name());
     }
 
@@ -282,7 +253,7 @@ class MappersTests {
     }
 
     @Test
-    void shouldMapperBatchToResonseBatch() {
+    void shouldMapperBatchToResponseBatch() {
         ResponseBatchDTO responseBatchDTO = batchMapper.toDTOResponse(batch);
 
         assertNotNull(responseBatchDTO);
@@ -312,7 +283,6 @@ class MappersTests {
     }
     @Test
     void shouldReturnNullWhenStockIsNull() {
-        Batch batch = new Batch();
         batch.setStock(null);
 
         ResponseBatchDTO result = batchMapper.toDTOResponse(batch);
@@ -322,10 +292,8 @@ class MappersTests {
 
     @Test
     void shouldReturnNullWhenProductIsNull() {
-        Stock stock = new Stock();
         stock.setProduct(null);
 
-        Batch batch = new Batch();
         batch.setStock(stock);
 
         ResponseBatchDTO result = batchMapper.toDTOResponse(batch);

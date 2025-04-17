@@ -18,9 +18,8 @@ spring:
     basename: messages
     encoding: UTF-8
   kafka:
-    bootstrap-servers: 127.0.0.1:65535
-    listener:
-      auto-startup: false
+    enable: false
+    bootstrap-servers: localhost:9092
 
 openapi:
   service:

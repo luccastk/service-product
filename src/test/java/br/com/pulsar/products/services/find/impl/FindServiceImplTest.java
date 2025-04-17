@@ -1,14 +1,16 @@
 package br.com.pulsar.products.services.find.impl;
 
-import br.com.pulsar.products.models.Batch;
-import br.com.pulsar.products.models.Product;
-import br.com.pulsar.products.models.Store;
-import br.com.pulsar.products.repositories.BatchRepository;
-import br.com.pulsar.products.repositories.ProductRepository;
-import br.com.pulsar.products.repositories.StoreRepository;
+import br.com.pulsar.products.domain.services.find.impl.FindServiceImpl;
+import br.com.pulsar.products.factory.TestBatch;
+import br.com.pulsar.products.factory.TestProduct;
+import br.com.pulsar.products.factory.TestStore;
+import br.com.pulsar.products.domain.models.Batch;
+import br.com.pulsar.products.domain.models.Product;
+import br.com.pulsar.products.domain.models.Store;
+import br.com.pulsar.products.domain.repositories.BatchRepository;
+import br.com.pulsar.products.domain.repositories.ProductRepository;
+import br.com.pulsar.products.domain.repositories.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.kafka.common.Uuid;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -40,86 +41,77 @@ class FindServiceImplTest {
     @InjectMocks
     private FindServiceImpl findService;
 
-    private UUID storeId;
-    private UUID productId;
-    private UUID batchId;
     private Store store;
     private Product product;
     private Batch batch;
 
     @BeforeEach
     void setUp() {
-        storeId = UUID.randomUUID();
-        productId = UUID.randomUUID();
+        store = TestStore.createStore();
 
-        store = new Store();
-        store.setId(storeId);
-
-        product = new Product();
-        product.setId(productId);
+        product = TestProduct.createProduct();
         product.setStore(store);
 
-        batch = new Batch();
-        batch.setId(batchId);
+        batch = TestBatch.createBatch();
     }
 
     @Test
     void shouldFindProductByStoreAndId() {
-        given(productRepository.findByStore_IdAndId(storeId, productId)).willReturn(Optional.of(product));
+        given(productRepository.findByStore_IdAndId(store.getId(), product.getId())).willReturn(Optional.of(product));
 
-        Product result = findService.findProductByStoreAndId(storeId, productId);
+        Product result = findService.findProductByStoreAndId(store.getId(), product.getId());
 
         assertNotNull(result);
-        assertEquals(productId, result.getId());
+        assertEquals(product.getId(), result.getId());
 
-        verify(productRepository).findByStore_IdAndId(storeId, productId);
+        verify(productRepository).findByStore_IdAndId(store.getId(), product.getId());
     }
 
     @Test
     void shouldNotFindProductByStoreAndId() {
-        given(productRepository.findByStore_IdAndId(storeId, productId))
+        given(productRepository.findByStore_IdAndId(store.getId(), product.getId()))
                 .willReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () ->
-                findService.findProductByStoreAndId(storeId, productId)
+                findService.findProductByStoreAndId(store.getId(), product.getId())
         );
     }
 
     @Test
     void shouldFindStoreId() {
-        given(storeRepository.findByUuid(storeId)).willReturn(Optional.of(store));
+        given(storeRepository.findByUuid(store.getId())).willReturn(Optional.of(store));
 
-        Store result = findService.findStoreId(storeId);
+        Store result = findService.findStoreId(store.getId());
 
         assertNotNull(result);
-        assertEquals(storeId, result.getId());
+        assertEquals(store.getId(), result.getId());
 
-        verify(storeRepository).findByUuid(storeId);
+        verify(storeRepository).findByUuid(store.getId());
     }
 
     @Test
     void shouldNotFindStoreId() {
-        given(storeRepository.findByUuid(storeId)).willReturn(Optional.empty());
+        given(storeRepository.findByUuid(store.getId())).willReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> findService.findStoreId(storeId));
+        assertThrows(EntityNotFoundException.class, () -> findService.findStoreId(store.getId()));
     }
 
     @Test
     void shouldFindByStoreAndBatchId() {
-        given(batchRepository.findByStock_Product_Store_IdAndId(storeId, batchId)).willReturn(Optional.of(batch));
+        given(batchRepository.findByStock_Product_Store_IdAndId(store.getId(), batch.getId())).willReturn(Optional.of(batch));
 
-        Batch result = findService.findByStoreAndBatchId(storeId, batchId);
+        Batch result = findService.findByStoreAndBatchId(store.getId(), batch.getId());
 
         assertNotNull(batch);
-        assertEquals(batchId, result.getId());
+        assertEquals(batch.getId(), result.getId());
 
-        verify(batchRepository).findByStock_Product_Store_IdAndId(storeId, batchId);
+        verify(batchRepository).findByStock_Product_Store_IdAndId(store.getId(), batch.getId());
     }
 
     @Test
     void shouldNotFindStoreAndBatchId() {
-        given(batchRepository.findByStock_Product_Store_IdAndId(storeId, batchId)).willReturn(Optional.empty());
+        given(batchRepository.findByStock_Product_Store_IdAndId(store.getId(), batch.getId())).willReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> findService.findByStoreAndBatchId(storeId, batchId));
+        assertThrows(EntityNotFoundException.class, () -> findService.findByStoreAndBatchId(store.getId(), batch.getId()));
     }
 }

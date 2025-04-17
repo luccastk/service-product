@@ -1,7 +1,7 @@
 package br.com.pulsar.products.controllers;
 
 import br.com.pulsar.products.exceptions.DuplicationException;
-import br.com.pulsar.products.presenters.ErrorPresenter;
+import br.com.pulsar.products.domain.presenters.ErrorPresenter;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;

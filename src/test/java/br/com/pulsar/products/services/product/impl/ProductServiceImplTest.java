@@ -1,26 +1,28 @@
 package br.com.pulsar.products.services.product.impl;
 
-import br.com.pulsar.products.dtos.batch.CreateBatchDTO;
-import br.com.pulsar.products.dtos.csv.ProductCsvDTO;
-import br.com.pulsar.products.dtos.http.ResponseProductDTO;
-import br.com.pulsar.products.dtos.http.ResponseWrapperProductDTO;
-import br.com.pulsar.products.dtos.products.CreateProductDTO;
-import br.com.pulsar.products.dtos.products.ProductWrapperDTO;
-import br.com.pulsar.products.dtos.products.UpdateProductDTO;
-import br.com.pulsar.products.dtos.stock.CreateStockDTO;
-import br.com.pulsar.products.dtos.stock.StockDTO;
+import br.com.pulsar.products.domain.dtos.batch.CreateBatchDTO;
+import br.com.pulsar.products.domain.dtos.csv.ProductCsvDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseProductDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseWrapperProductDTO;
+import br.com.pulsar.products.domain.dtos.products.CreateProductDTO;
+import br.com.pulsar.products.domain.dtos.products.ProductWrapperDTO;
+import br.com.pulsar.products.domain.dtos.products.UpdateProductDTO;
+import br.com.pulsar.products.domain.dtos.stock.CreateStockDTO;
+import br.com.pulsar.products.domain.dtos.stock.StockDTO;
+import br.com.pulsar.products.domain.services.product.impl.ProductServiceImpl;
 import br.com.pulsar.products.exceptions.DuplicationException;
-import br.com.pulsar.products.mappers.CsvToDomainMapper;
-import br.com.pulsar.products.mappers.ProductMapper;
-import br.com.pulsar.products.models.Batch;
-import br.com.pulsar.products.models.Product;
-import br.com.pulsar.products.models.Stock;
-import br.com.pulsar.products.models.Store;
-import br.com.pulsar.products.repositories.ProductRepository;
-import br.com.pulsar.products.services.batch.BatchService;
-import br.com.pulsar.products.services.csv.CsvProcessor;
-import br.com.pulsar.products.services.find.FindService;
-import br.com.pulsar.products.services.stock.StockService;
+import br.com.pulsar.products.factory.*;
+import br.com.pulsar.products.domain.mappers.CsvToDomainMapper;
+import br.com.pulsar.products.domain.mappers.ProductMapper;
+import br.com.pulsar.products.domain.models.Batch;
+import br.com.pulsar.products.domain.models.Product;
+import br.com.pulsar.products.domain.models.Stock;
+import br.com.pulsar.products.domain.models.Store;
+import br.com.pulsar.products.domain.repositories.ProductRepository;
+import br.com.pulsar.products.domain.services.batch.BatchService;
+import br.com.pulsar.products.domain.services.csv.CsvProcessor;
+import br.com.pulsar.products.domain.services.find.FindService;
+import br.com.pulsar.products.domain.services.stock.StockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,11 +34,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
+import static br.com.pulsar.products.factory.TestBatch.createBatchDTO;
+import static br.com.pulsar.products.factory.TestStore.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -70,8 +71,6 @@ class ProductServiceImplTest {
     @Captor
     private ArgumentCaptor<Product> productCaptor;
 
-    private UUID storeId;
-    private UUID productId;
     private Store store;
     private Product product;
     private Stock stock;
@@ -84,45 +83,23 @@ class ProductServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        storeId = UUID.randomUUID();
-        productId = UUID.randomUUID();
-
-        store = new Store();
-        store.setId(storeId);
-
-        createBatchDTO = new CreateBatchDTO(
-                10,
-                LocalDate.now().plusMonths(10)
-        );
-
-        CreateStockDTO createStockDTO = new CreateStockDTO(
-                BigDecimal.valueOf(10)
-        );
-
-        createProductDTO = new CreateProductDTO(
-                "Product Test",
-                createStockDTO,
-                List.of(createBatchDTO)
-        );
-
-        product = new Product();
-        product.setId(productId);
-        product.setName(createProductDTO.name());
+        store = createStore();
+        product = TestProduct.createProduct();
+        stock = TestStock.createStock();
+        batch = TestBatch.createBatch();
+        
         product.setStore(store);
-        product.setActive(true);
 
-        stock = new Stock();
-        batch = new Batch();
+        createBatchDTO = createBatchDTO();
 
-        updateProductDTO = new UpdateProductDTO(
-                "New product name",
-                true
-        );
+        CreateStockDTO createStockDTO = TestStock.createStockDTO();
 
-        StockDTO stockDTO = new StockDTO(
-                10,
-                BigDecimal.valueOf(50)
-        );
+        createProductDTO = TestProduct.createProductDTO();
+
+
+        updateProductDTO = TestProduct.updateProductDTO();
+
+        StockDTO stockDTO = TestStock.stockDTO();
 
         responseProductDTO = new ResponseProductDTO(
                 product.getId(),
@@ -131,11 +108,7 @@ class ProductServiceImplTest {
                 stockDTO
         );
 
-        productCsvDTO = new ProductCsvDTO();
-        productCsvDTO.setName(createProductDTO.name());
-        productCsvDTO.setPrice(createStockDTO.price());
-        productCsvDTO.setBatchQuantity(createBatchDTO.quantity());
-        productCsvDTO.setBatchValidity(createBatchDTO.validity());
+        productCsvDTO = TestCsvProducts.createProductCsvDTO();
     }
 
     @Test
@@ -170,10 +143,10 @@ class ProductServiceImplTest {
     void shouldUpdateProduct() {
         product.setActive(false);
 
-        given(findService.findProductByStoreAndId(storeId, productId)).willReturn(product);
+        given(findService.findProductByStoreAndId(store.getId(), product.getId())).willReturn(product);
         given(productRepository.save(product)).willReturn(product);
 
-        Product result = productService.updateProduct(storeId, productId, updateProductDTO);
+        Product result = productService.updateProduct(store.getId(), product.getId(), updateProductDTO);
 
         assertNotNull(result);
         assertEquals(updateProductDTO.name(), result.getName());
@@ -190,12 +163,12 @@ class ProductServiceImplTest {
             null
         );
 
-        given(findService.findProductByStoreAndId(storeId, productId)).willReturn(product);
+        given(findService.findProductByStoreAndId(store.getId(), product.getId())).willReturn(product);
         given(productRepository.save(product)).willReturn(product);
 
-        Product result = productService.updateProduct(storeId, productId, newUpdateProductDTO);
+        Product result = productService.updateProduct(store.getId(), product.getId(), newUpdateProductDTO);
 
-        assertEquals(result.getName(), "Product Test");
+        assertEquals(result.getName(), product.getName());
         assertTrue(result.getActive());
 
         verify(productRepository).save(product);
@@ -203,19 +176,19 @@ class ProductServiceImplTest {
 
     @Test
     void shouldReturnProductDetails() {
-        given(findService.findProductByStoreAndId(storeId, productId)).willReturn(product);
+        given(findService.findProductByStoreAndId(store.getId(), product.getId())).willReturn(product);
 
-        Product result = productService.productDetail(storeId, productId);
+        Product result = productService.productDetail(store.getId(), product.getId());
 
         assertNotNull(result);
     }
 
     @Test
     void shouldDeactivateProduct() {
-        given(findService.findProductByStoreAndId(storeId, productId)).willReturn(product);
+        given(findService.findProductByStoreAndId(store.getId(), product.getId())).willReturn(product);
         given(productRepository.save(product)).willReturn(product);
 
-        productService.deActiveProduct(storeId, productId);
+        productService.deActiveProduct(store.getId(), product.getId());
 
         assertFalse(product.getActive());
 
@@ -226,47 +199,47 @@ class ProductServiceImplTest {
     void shouldReturnListProductsWithCursorNull() {
         int limit = 50;
 
-        given(productRepository.findProductPerStore(storeId, limit)).willReturn(List.of(product));
+        given(productRepository.findProductPerStore(store.getId(), limit)).willReturn(List.of(product));
         given(productMapper.ToDTO(List.of(product))).willReturn(List.of(responseProductDTO));
 
-        ResponseWrapperProductDTO result = productService.listProductPerStore(storeId, null, limit);
+        ResponseWrapperProductDTO result = productService.listProductPerStore(store.getId(), null, limit);
 
         assertNotNull(result);
         assertNull(result.nextCursor());
         assertEquals(result.products().get(0).name(), product.getName());
 
-        verify(productRepository).findProductPerStore(storeId, limit);
+        verify(productRepository).findProductPerStore(store.getId(), limit);
     }
 
     @Test
     void shouldReturnListProductWithCursor() {
         int limit = 1;
 
-        given(productRepository.findProductPerStoreAfterCursor(storeId, product.getName(), limit)).willReturn(List.of(product));
+        given(productRepository.findProductPerStoreAfterCursor(store.getId(), product.getName(), limit)).willReturn(List.of(product));
         given(productMapper.ToDTO(List.of(product))).willReturn(List.of(responseProductDTO));
 
-        ResponseWrapperProductDTO result = productService.listProductPerStore(storeId, product.getName(), limit);
+        ResponseWrapperProductDTO result = productService.listProductPerStore(store.getId(), product.getName(), limit);
 
         assertNotNull(result);
         assertEquals(result.nextCursor(), product.getName());
         assertEquals(result.products().get(0).name(), product.getName());
 
-        verify(productRepository).findProductPerStoreAfterCursor(storeId, product.getName(), limit);
+        verify(productRepository).findProductPerStoreAfterCursor(store.getId(), product.getName(), limit);
     }
 
     @Test
     void shouldReturnListEmptyProducts() {
         int limit = 50;
 
-        given(productRepository.findProductPerStore(storeId, limit)).willReturn(List.of());
+        given(productRepository.findProductPerStore(store.getId(), limit)).willReturn(List.of());
         given(productMapper.ToDTO(List.of())).willReturn(List.of());
 
-        ResponseWrapperProductDTO result = productService.listProductPerStore(storeId, null, limit);
+        ResponseWrapperProductDTO result = productService.listProductPerStore(store.getId(), null, limit);
 
         assertNotNull(result);
         assertTrue(result.products().isEmpty());
 
-        verify(productRepository).findProductPerStore(storeId, limit);
+        verify(productRepository).findProductPerStore(store.getId(), limit);
     }
 
     @Test
@@ -274,7 +247,7 @@ class ProductServiceImplTest {
 
         String csv = """
                 name,price,quantity,validity
-                Product test csv,100.00,10,2025-10-10
+                Product test,100.00,10,2025-10-10
                 """;
 
         InputStream is = new ByteArrayInputStream(csv.getBytes());
@@ -292,7 +265,7 @@ class ProductServiceImplTest {
 
         ProductWrapperDTO wrapper = CsvToDomainMapper.toWrapper(List.of(productCsvDTO));
 
-        productService.convertCsvToEntity(storeId, is);
+        productService.convertCsvToEntity(store.getId(), is);
 
         verify(productRepository, times(wrapper.products().size())).save(product);
     }

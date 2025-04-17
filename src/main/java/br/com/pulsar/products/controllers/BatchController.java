@@ -1,12 +1,12 @@
 package br.com.pulsar.products.controllers;
 
-import br.com.pulsar.products.dtos.batch.BatchWrapperDTO;
-import br.com.pulsar.products.dtos.batch.UpdateBatchDTO;
-import br.com.pulsar.products.dtos.http.ResponseBatchDTO;
-import br.com.pulsar.products.dtos.http.ResponseWrapperBatchDTO;
-import br.com.pulsar.products.presenters.DataPresenter;
-import br.com.pulsar.products.presenters.ErrorPresenter;
-import br.com.pulsar.products.services.rest.ApiBatch;
+import br.com.pulsar.products.domain.dtos.batch.BatchWrapperDTO;
+import br.com.pulsar.products.domain.dtos.batch.UpdateBatchDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseBatchDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseWrapperBatchDTO;
+import br.com.pulsar.products.domain.presenters.DataPresenter;
+import br.com.pulsar.products.domain.presenters.ErrorPresenter;
+import br.com.pulsar.products.domain.services.rest.ApiBatch;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin

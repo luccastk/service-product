@@ -1,25 +1,26 @@
 package br.com.pulsar.products.services.stock.impl;
 
-import br.com.pulsar.products.dtos.batch.CreateBatchDTO;
-import br.com.pulsar.products.dtos.stock.CreateStockDTO;
-import br.com.pulsar.products.dtos.stock.UpdateStockDTO;
-import br.com.pulsar.products.mappers.StockMapper;
-import br.com.pulsar.products.models.Product;
-import br.com.pulsar.products.models.Stock;
-import br.com.pulsar.products.models.Store;
-import br.com.pulsar.products.repositories.StockRepository;
-import br.com.pulsar.products.services.find.FindService;
+import br.com.pulsar.products.domain.dtos.batch.CreateBatchDTO;
+import br.com.pulsar.products.domain.dtos.stock.CreateStockDTO;
+import br.com.pulsar.products.domain.dtos.stock.UpdateStockDTO;
+import br.com.pulsar.products.domain.services.stock.impl.StockServiceImpl;
+import br.com.pulsar.products.factory.TestProduct;
+import br.com.pulsar.products.factory.TestStock;
+import br.com.pulsar.products.factory.TestStore;
+import br.com.pulsar.products.domain.mappers.StockMapper;
+import br.com.pulsar.products.domain.models.Product;
+import br.com.pulsar.products.domain.models.Stock;
+import br.com.pulsar.products.domain.models.Store;
+import br.com.pulsar.products.domain.repositories.StockRepository;
+import br.com.pulsar.products.domain.services.find.FindService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -45,34 +46,24 @@ class StockServiceImplTest {
     @Mock
     private CreateBatchDTO createBatchDTO;
 
-    private UUID storeId;
-    private UUID productId;
+    private Store store;
     private Product product;
     private Stock stock;
     private UpdateStockDTO updateStockDTO;
 
     @BeforeEach
     void setUp() {
-        storeId = UUID.randomUUID();
-
-        Store store = new Store();
-        store.setId(storeId);
-
-        product = new Product();
-        product.setId(productId);
+        store = TestStore.createStore();
+        product = TestProduct.createProduct();
+        stock = TestStock.createStock();
 
         store.setProducts(List.of(product));
 
-        stock = new Stock();
-        stock.setStore(store);
-        stock.setQuantity(50);
-        stock.setPrice(BigDecimal.valueOf(20));
-
         product.setStock(stock);
 
-        updateStockDTO = new UpdateStockDTO(
-                BigDecimal.valueOf(90)
-        );
+        stock.setStore(store);
+
+        updateStockDTO = TestStock.updateStockDTO();
     }
 
     @Test
@@ -94,7 +85,7 @@ class StockServiceImplTest {
         stockService.updateStockQuantity(stock, 10);
 
         assertNotNull(stock);
-        assertEquals(stock.getQuantity(), 10);
+        assertEquals(10, stock.getQuantity());
 
         verify(stockRepository).save(stock);
     }
@@ -106,17 +97,17 @@ class StockServiceImplTest {
         stockService.updateStockQuantity(stock, 30);
 
         assertNotNull(stock);
-        assertEquals(stock.getQuantity(), 80);
+        assertEquals(130, stock.getQuantity());
 
         verify(stockRepository).save(stock);
     }
 
     @Test
     void shouldUpdatePrice() {
-        given(findService.findProductByStoreAndId(storeId, productId)).willReturn(product);
+        given(findService.findProductByStoreAndId(store.getId(), product.getId())).willReturn(product);
         given(stockRepository.save(stock)).willReturn(stock);
 
-        Stock result = stockService.updatePrice(storeId, productId, updateStockDTO);
+        Stock result = stockService.updatePrice(store.getId(), product.getId(), updateStockDTO);
 
         assertNotNull(result);
         assertEquals(result.getPrice(), updateStockDTO.price());
@@ -130,13 +121,13 @@ class StockServiceImplTest {
                 null
         );
 
-        given(findService.findProductByStoreAndId(storeId, productId)).willReturn(product);
+        given(findService.findProductByStoreAndId(store.getId(), product.getId())).willReturn(product);
         given(stockRepository.save(stock)).willReturn(stock);
 
-        Stock result = stockService.updatePrice(storeId, productId, newUpdateStock);
+        Stock result = stockService.updatePrice(store.getId(), product.getId(), newUpdateStock);
 
         assertNotNull(result);
-        assertEquals(result.getPrice(), BigDecimal.valueOf(20));
+        assertEquals(result.getPrice(), stock.getPrice());
 
         verify(stockRepository).save(stock);
     }

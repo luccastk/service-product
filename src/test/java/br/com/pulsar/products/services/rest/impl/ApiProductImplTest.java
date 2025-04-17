@@ -1,17 +1,18 @@
 package br.com.pulsar.products.services.rest.impl;
 
-import br.com.pulsar.products.dtos.http.ResponseProductDTO;
-import br.com.pulsar.products.dtos.http.ResponseWrapperProductDTO;
-import br.com.pulsar.products.dtos.products.CreateProductDTO;
-import br.com.pulsar.products.dtos.products.ProductWrapperDTO;
-import br.com.pulsar.products.dtos.products.UpdateProductDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseProductDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseWrapperProductDTO;
+import br.com.pulsar.products.domain.dtos.products.CreateProductDTO;
+import br.com.pulsar.products.domain.dtos.products.ProductWrapperDTO;
+import br.com.pulsar.products.domain.dtos.products.UpdateProductDTO;
+import br.com.pulsar.products.domain.services.rest.impl.ApiProductImpl;
 import br.com.pulsar.products.factory.TestProduct;
 import br.com.pulsar.products.factory.TestStore;
-import br.com.pulsar.products.mappers.ProductMapper;
-import br.com.pulsar.products.models.Product;
-import br.com.pulsar.products.models.Store;
-import br.com.pulsar.products.services.find.FindService;
-import br.com.pulsar.products.services.product.ProductService;
+import br.com.pulsar.products.domain.mappers.ProductMapper;
+import br.com.pulsar.products.domain.models.Product;
+import br.com.pulsar.products.domain.models.Store;
+import br.com.pulsar.products.domain.services.find.FindService;
+import br.com.pulsar.products.domain.services.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +51,7 @@ class ApiProductImplTest {
 
     @BeforeEach
     void setUp() {
-        store = TestStore.createValidStore();
+        store = TestStore.createStore();
 
         product = TestProduct.createProduct();
 

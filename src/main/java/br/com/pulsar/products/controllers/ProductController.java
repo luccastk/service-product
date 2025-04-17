@@ -1,12 +1,12 @@
 package br.com.pulsar.products.controllers;
 
-import br.com.pulsar.products.dtos.products.ProductWrapperDTO;
-import br.com.pulsar.products.dtos.http.ResponseProductDTO;
-import br.com.pulsar.products.dtos.http.ResponseWrapperProductDTO;
-import br.com.pulsar.products.dtos.products.*;
-import br.com.pulsar.products.presenters.DataPresenter;
-import br.com.pulsar.products.presenters.ErrorPresenter;
-import br.com.pulsar.products.services.rest.ApiProduct;
+import br.com.pulsar.products.domain.dtos.products.ProductWrapperDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseProductDTO;
+import br.com.pulsar.products.domain.dtos.http.ResponseWrapperProductDTO;
+import br.com.pulsar.products.domain.dtos.products.UpdateProductDTO;
+import br.com.pulsar.products.domain.presenters.DataPresenter;
+import br.com.pulsar.products.domain.presenters.ErrorPresenter;
+import br.com.pulsar.products.domain.services.rest.ApiProduct;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

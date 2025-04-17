@@ -1,12 +1,11 @@
 package br.com.pulsar.products.services.csv;
 
-import br.com.pulsar.products.dtos.csv.ProductCsvDTO;
-import jakarta.persistence.EntityNotFoundException;
+import br.com.pulsar.products.domain.dtos.csv.ProductCsvDTO;
+import br.com.pulsar.products.domain.services.csv.CsvProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;

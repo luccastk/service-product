@@ -1,14 +1,13 @@
 package br.com.pulsar.products.services.store.impl;
 
-import br.com.pulsar.products.dtos.store.CreateStoreDTO;
-import br.com.pulsar.products.dtos.store.UpdateStoreDTO;
+import br.com.pulsar.products.domain.dtos.store.CreateStoreDTO;
+import br.com.pulsar.products.domain.dtos.store.UpdateStoreDTO;
+import br.com.pulsar.products.domain.services.store.impl.StoreServiceImpl;
 import br.com.pulsar.products.exceptions.DuplicationException;
-import br.com.pulsar.products.mappers.StockMapper;
-import br.com.pulsar.products.mappers.StoreMapper;
-import br.com.pulsar.products.models.Product;
-import br.com.pulsar.products.models.Store;
-import br.com.pulsar.products.repositories.StoreRepository;
-import br.com.pulsar.products.services.find.FindService;
+import br.com.pulsar.products.domain.mappers.StoreMapper;
+import br.com.pulsar.products.domain.models.Store;
+import br.com.pulsar.products.domain.repositories.StoreRepository;
+import br.com.pulsar.products.domain.services.find.FindService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;

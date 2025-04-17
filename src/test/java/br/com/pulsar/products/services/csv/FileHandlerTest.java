@@ -1,34 +1,28 @@
 package br.com.pulsar.products.services.csv;
 
-import br.com.pulsar.products.dtos.csv.ProductCsvDTO;
-import br.com.pulsar.products.dtos.kafka.FileUploadEvent;
-import br.com.pulsar.products.dtos.kafka.ProductCreateEvent;
-import br.com.pulsar.products.dtos.products.ProductWrapperDTO;
-import br.com.pulsar.products.exceptions.DuplicationException;
-import br.com.pulsar.products.feign.FileDownload;
-import br.com.pulsar.products.kafka.PublishStatusProduct;
-import br.com.pulsar.products.models.Product;
-import br.com.pulsar.products.services.product.ProductService;
-import br.com.pulsar.products.services.rest.ApiProduct;
+import br.com.pulsar.products.domain.dtos.csv.ProductCsvDTO;
+import br.com.pulsar.products.domain.dtos.kafka.FileUploadEvent;
+import br.com.pulsar.products.domain.services.csv.CsvProcessor;
+import br.com.pulsar.products.domain.services.csv.FileHandler;
+import br.com.pulsar.products.infra.feign.FileDownload;
+import br.com.pulsar.products.infra.kafka.PublishStatusProduct;
+import br.com.pulsar.products.domain.models.Product;
+import br.com.pulsar.products.domain.services.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
