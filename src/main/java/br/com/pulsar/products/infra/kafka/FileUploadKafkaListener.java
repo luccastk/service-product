@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "kafka.enable", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "kafka.enabled", havingValue = "true", matchIfMissing = false)
 public class FileUploadKafkaListener {
 
     private final FileHandler fileHandler;

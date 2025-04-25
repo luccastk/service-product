@@ -20,6 +20,9 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_SERVER}
 
+kafka:
+  enabled: true
+
 openapi:
   service:
     title: ${OPENAPI_NAME}
